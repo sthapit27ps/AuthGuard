@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="csrf" content="{{ csrf_token }}">
+  <title>{% block title %}{% endblock %} - AuthGuard</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<!-- sthapit27ps -->
+<header class="top">
+  <div class="wrap bar">
+    <a class="brand" href="/">AuthGuard</a>
+    {% if user %}
+    <nav aria-label="Account">
+      <a href="/dashboard">Overview</a>
+      <a href="/security">Security</a>
+      <form method="post" action="/logout" class="inline">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+        <button class="linkish" type="submit">Sign out</button>
+      </form>
+    </nav>
+    {% endif %}
+  </div>
+</header>
+
+<main class="wrap">
+  {% if flash %}<p class="flash" role="status">{{ flash }}</p>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="wrap foot">
+  AuthGuard is a sign-in system built to show how the pieces fit together. Written by sthapit27ps.
+</footer>
+<!-- sthapit27ps -->
+<script src="/static/app.js" defer></script>
+</body>
+</html>

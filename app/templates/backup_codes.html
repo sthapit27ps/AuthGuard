@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Your backup codes{% endblock %}
+{% block content %}
+<h1>Two-step verification is on</h1>
+<p>Here are your backup codes. If you lose your phone, any one of them gets you in once. Save them in a password manager or print them, and keep them somewhere other than your phone.</p>
+<p><strong>This is the only time they're shown.</strong> We store a scrambled version, not the codes themselves.</p>
+
+<ul class="codes mono">
+  {% for c in codes %}<li>{{ c }}</li>{% endfor %}
+</ul>
+
+<a class="button" href="/security">I've saved them</a>
+{% endblock %}

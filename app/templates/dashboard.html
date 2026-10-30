@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block content %}
+<h1>{{ user.display_name }}</h1>
+
+<dl class="facts">
+  <dt>Email</dt><dd>{{ user.email }}</dd>
+  <dt>Member since</dt><dd>{{ user.created_at|stamp }}</dd>
+  <dt>Password changed</dt><dd>{{ user.password_changed_at|stamp }}</dd>
+  <dt>Two-step verification</dt>
+  <dd>{% if user.totp_enabled %}On{% else %}Off. <a href="/security#two-step">Turn it on</a>{% endif %}</dd>
+  <dt>Devices signed in</dt><dd>{{ session_count }} (<a href="/security#devices">manage</a>)</dd>
+</dl>
+
+<section class="block">
+  <h2>Recent activity</h2>
+  {% if events %}
+  <div class="scroll">
+    <table class="ledger">
+      <thead><tr><th>When</th><th>What happened</th><th>Address</th><th>Device</th></tr></thead>
+      <tbody>
+      {% for e in events %}
+        <tr>
+          <td>{{ e.created_at|stamp }}</td>
+          <td>{{ e.kind|event_label }}</td>
+          <td class="mono">{{ e.ip or "-" }}</td>
+          <td>{{ e.user_agent|device }}</td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p class="muted small">If you see something here you don't recognise, change your password and end your other sessions on the <a href="/security">Security</a> page.</p>
+  {% else %}
+  <p class="muted">Nothing yet. Sign-ins, password changes and failed attempts will be listed here.</p>
+  {% endif %}
+</section>
+{% endblock %}

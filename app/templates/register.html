@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block title %}Create an account{% endblock %}
+{% block content %}
+<div class="split">
+  <section>
+    <h1>Create an account</h1>
+    {% if errors %}
+    <ul class="error" role="alert">
+      {% for e in errors %}<li>{{ e }}</li>{% endfor %}
+    </ul>
+    {% endif %}
+    <form method="post" action="/register">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="{{ form.get('email', '') }}" autocomplete="username" required autofocus>
+
+      <label for="display_name">Name</label>
+      <input id="display_name" name="display_name" type="text" value="{{ form.get('display_name', '') }}" maxlength="80" autocomplete="name">
+
+      <label for="password">Password</label>
+      <div class="field-row">
+        <input id="password" name="password" type="password" autocomplete="new-password" data-strength required>
+        <button type="button" class="reveal" data-reveal="password" aria-pressed="false">Show</button>
+      </div>
+      {% include "_strength.html" %}
+
+      <label for="confirm">Type it again</label>
+      <input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+
+      <button type="submit">Create account</button>
+    </form>
+    <p class="aside">Already have one? <a href="/login">Sign in</a>.</p>
+  </section>
+
+  <aside class="note">
+    <h2>A good password</h2>
+    <p>Length does more than symbols. Four or five unrelated words, like <em>violet lantern orbit quiet</em>, is harder to crack than <em>P@ssw0rd1!</em> and easier to remember.</p>
+    <p>It needs {{ min_length }} characters at least, it can't be a well-known password, and it can't contain your name or email.</p>
+  </aside>
+</div>
+{% endblock %}

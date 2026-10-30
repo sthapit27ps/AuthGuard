@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Enter your code{% endblock %}
+{% block content %}
+<div class="split">
+  <section>
+    <h1>One more step</h1>
+    <p>Open your authenticator app and type the 6-digit code it shows for AuthGuard.</p>
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="/login/mfa">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="code">Code</label>
+      <input id="code" name="code" type="text" inputmode="text" autocomplete="one-time-code" autocapitalize="off" spellcheck="false" maxlength="16" required autofocus>
+      <button type="submit">Verify</button>
+    </form>
+    <p class="aside">Lost your phone? Type one of your backup codes in the box instead. Each one works once.</p>
+  </section>
+  <aside class="note">
+    <h2>Why again?</h2>
+    <p>Your password was right, but it's no longer enough on its own. This code changes every 30 seconds and lives on your phone, so someone who learns your password still can't get in.</p>
+    <p>You have five minutes to finish signing in.</p>
+  </aside>
+</div>
+{% endblock %}

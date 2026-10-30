@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block content %}
+<div class="split">
+  <section>
+    <h1>Sign in</h1>
+    {% if error %}<p class="error" role="alert">{{ error }}</p>{% endif %}
+    <form method="post" action="/login">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+      <label for="email">Email</label>
+      <input id="email" name="email" type="email" value="{{ email }}" autocomplete="username" required autofocus>
+
+      <label for="password">Password</label>
+      <div class="field-row">
+        <input id="password" name="password" type="password" autocomplete="current-password" required>
+        <button type="button" class="reveal" data-reveal="password" aria-pressed="false">Show</button>
+      </div>
+
+      <button type="submit">Sign in</button>
+    </form>
+    <p class="aside">New here? <a href="/register">Create an account</a>.</p>
+  </section>
+
+  <aside class="note">
+    <h2>What happens to your password</h2>
+    <p>It's turned into an Argon2id hash the moment it arrives, and only the hash is saved. There is no copy of the password anywhere, so nobody here can read it back to you.</p>
+    <p>After five wrong tries the email is locked for fifteen minutes. If you turned on an authenticator app, you'll be asked for its code next.</p>
+  </aside>
+</div>
+{% endblock %}

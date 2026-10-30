@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}Security{% endblock %}
+{% block content %}
+<h1>Security</h1>
+
+<section class="block" id="password">
+  <h2>Password</h2>
+  {% if pw_errors %}
+  <ul class="error" role="alert">{% for e in pw_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+  {% endif %}
+  <form method="post" action="/security/password">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+
+    <label for="current_password">Current password</label>
+    <input id="current_password" name="current_password" type="password" autocomplete="current-password" required>
+
+    <label for="password">New password</label>
+    <div class="field-row">
+      <input id="password" name="new_password" type="password" autocomplete="new-password" data-strength required>
+      <button type="button" class="reveal" data-reveal="password" aria-pressed="false">Show</button>
+    </div>
+    {% include "_strength.html" %}
+
+    <label for="confirm">Type the new one again</label>
+    <input id="confirm" name="confirm" type="password" autocomplete="new-password" required>
+
+    <button type="submit">Change password</button>
+  </form>
+  <p class="muted small aside">Changing it signs out every other device. The last few passwords can't be reused.</p>
+</section>
+
+<section class="block" id="two-step">
+  <h2>Two-step verification</h2>
+  {% if mfa_error %}<p class="error" role="alert">{{ mfa_error }}</p>{% endif %}
+
+  {% if mfa_state == "off" %}
+    <p>Off. Turning it on means signing in needs your password and a 6-digit code from an app such as Google Authenticator, Microsoft Authenticator or Aegis.</p>
+    <form method="post" action="/security/mfa/start">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit">Set up an authenticator app</button>
+    </form>
+
+  {% elif mfa_state == "pending" %}
+    <p>Scan this with your authenticator app, then type the 6-digit code it shows to finish.</p>
+    <img class="qr" src="{{ mfa_qr }}" alt="QR code for your authenticator app" width="184" height="184">
+    <p class="small after-qr">Can't scan it? Enter this key by hand:<br><span class="secret mono">{{ mfa_secret }}</span></p>
+    <form method="post" action="/security/mfa/enable">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="code">Code from the app</label>
+      <input id="code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="7" pattern="[0-9 ]*" required>
+      <button type="submit">Turn on</button>
+    </form>
+    <form method="post" action="/security/mfa/start">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <button type="submit" class="secondary">Start over with a new key</button>
+    </form>
+
+  {% else %}
+    <p>On. You have {{ codes_left }} unused backup code{{ "" if codes_left == 1 else "s" }}.</p>
+    <p class="muted small">To turn it off you'll need your password and a current code.</p>
+    <form method="post" action="/security/mfa/disable">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+      <label for="d_password">Password</label>
+      <input id="d_password" name="password" type="password" autocomplete="current-password" required>
+      <label for="d_code">Code from the app</label>
+      <input id="d_code" name="code" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="7" pattern="[0-9 ]*" required>
+      <button type="submit" class="secondary">Turn off</button>
+    </form>
+  {% endif %}
+</section>
+
+<section class="block" id="devices">
+  <h2>Where you're signed in</h2>
+  <div class="scroll">
+    <table class="ledger">
+      <thead><tr><th>Device</th><th>Address</th><th>Signed in</th><th>Last active</th><th></th></tr></thead>
+      <tbody>
+      {% for s in sessions %}
+        <tr>
+          <td>{{ s.user_agent|device }}</td>
+          <td class="mono">{{ s.ip or "-" }}</td>
+          <td>{{ s.created_at|stamp }}</td>
+          <td>{{ s.last_seen_at|stamp }}</td>
+          <td>
+            {% if s.id == current_id %}
+              <span class="tag-here">This device</span>
+            {% else %}
+              <form method="post" action="/security/sessions/end" class="inline">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                <input type="hidden" name="session_id" value="{{ s.id }}">
+                <button type="submit" class="secondary small-btn">End</button>
+              </form>
+            {% endif %}
+          </td>
+        </tr>
+      {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% if sessions|length > 1 %}
+  <form method="post" action="/security/sessions/end-others">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+    <button type="submit" class="secondary">Sign out everywhere else</button>
+  </form>
+  {% endif %}
+</section>
+{% endblock %}

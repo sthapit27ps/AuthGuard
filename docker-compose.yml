@@ -1,0 +1,38 @@
+# sthapit27ps
+# docker compose up --build
+# Needs a .env next to this file (copy .env.example). SECRET_KEY has no default on purpose.
+
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: authguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-locally}
+      POSTGRES_DB: authguard
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U authguard -d authguard"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      AUTHGUARD_ENV: prod
+      SECRET_KEY: ${SECRET_KEY:?Set SECRET_KEY in .env (see .env.example)}
+      DATABASE_URL: postgresql+psycopg://authguard:${POSTGRES_PASSWORD:-change-me-locally}@db:5432/authguard
+      # false only so http://localhost:8000 works for a local try-out.
+      # Put the app behind HTTPS and set this to true for anything real.
+      COOKIE_SECURE: ${COOKIE_SECURE:-false}
+    ports:
+      - "127.0.0.1:8000:8000"
+
+volumes:
+  pgdata:

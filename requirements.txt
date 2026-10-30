@@ -1,0 +1,14 @@
+fastapi==0.162.0
+uvicorn==0.54.0
+starlette==1.7.0
+SQLAlchemy==2.1.6
+psycopg[binary]==3.3.6
+argon2-cffi==25.1.0
+pyotp==2.10.0
+qrcode==8.2
+cryptography==50.0.1
+zxcvbn==4.5.0
+Jinja2==3.1.6
+python-multipart==0.0.32
+python-dotenv==1.2.3
+pydantic==2.13.5
