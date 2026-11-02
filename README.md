@@ -2,7 +2,10 @@
 
 AuthGuard is a small authentication system I built to understand and implement the security controls that should exist behind a normal login system.
 
-Instead of only focusing on the login page, I wanted to look at what happens after a user enters their credentials — password hashing, brute-force protection, sessions, CSRF protection, MFA, password policies, and security events.
+Instead of only focusing on the login page, I wanted to look at what happens after a user enters their credentials, password hashing.
+
+
+I did this as a semester project in teh subject of cryptography. 
 
 ## What it includes
 
