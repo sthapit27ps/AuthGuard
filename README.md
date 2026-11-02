@@ -5,7 +5,7 @@ AuthGuard is a small authentication system I built to understand and implement t
 Instead of only focusing on the login page, I wanted to look at what happens after a user enters their credentials, password hashing.
 
 
-I did this as a semester project in teh subject of cryptography. 
+I did this as a semester project for cryptography project. 
 
 ## What it includes
 
