@@ -24,9 +24,7 @@ I did this as a semester project for cryptography project.
 * Security headers
 * SQLite for local development
 * PostgreSQL support through Docker
-
 ## Project structure
-
 ```text
 authguard/
 │
@@ -62,7 +60,8 @@ authguard/
 ├── docker-compose.yml
 ├── .env.example
 └── pytest.ini
-```
+
+
 
 ---
 
@@ -84,7 +83,6 @@ I recommend using Python 3.11 or 3.12 for this project.
 ```powershell
 py -3.12 -m venv .venv
 ```
-
 Activate it:
 
 ```powershell
