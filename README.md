@@ -103,7 +103,6 @@ without activating the environment.
 python3 -m venv .venv
 source .venv/bin/activate
 ```
-
 ---
 
 ## 3. Install the dependencies
@@ -113,7 +112,6 @@ Use Python to run pip instead of calling `pip` directly:
 ```bash
 python -m pip install -r requirements-dev.txt
 ```
-
 For the normal application dependencies only:
 
 ```bash
